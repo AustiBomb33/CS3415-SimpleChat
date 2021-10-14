@@ -36,7 +36,18 @@ public class EchoServer extends ocsf.server.AbstractServer
 
   
   //Instance methods ************************************************
-  
+
+
+    @Override
+    public void clientConnected(ConnectionToClient client) {
+        this.sendToAllClients("Welcome to the server! What's your name?");
+    }
+
+    @Override
+    protected synchronized void clientDisconnected(ConnectionToClient client) {
+        this.sendToAllClients("Somebody left. Goodbye!");
+    }
+
   /**
    * This method handles any messages received from the ocsf.client.
    *
@@ -76,7 +87,7 @@ public class EchoServer extends ocsf.server.AbstractServer
    * This method is responsible for the creation of 
    * the server instance (there is no UI in this phase).
    *
-   * @param args[0] The port number to listen on.  Defaults to 5555 
+   * @param args [0] The port number to listen on.  Defaults to 5555
    *          if no argument is entered.
    */
   public static void main(String[] args) 

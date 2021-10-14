@@ -78,7 +78,17 @@ public class ChatClient extends AbstractClient
       quit();
     }
   }
-  
+
+//  public void connectionClosed(){
+//    clientUI.display("Connection to server has been closed. Terminating ocsf.client.");
+//    quit();
+//  }
+
+    public void connectionException(Exception exception) {
+        clientUI.display("Connection error occurred. Terminating ocsf.client.");
+        quit();
+    }
+
   /**
    * This method terminates the ocsf.client.
    */
@@ -91,5 +101,7 @@ public class ChatClient extends AbstractClient
     catch(IOException e) {}
     System.exit(0);
   }
+
+
 }
 //End of ChatClient class

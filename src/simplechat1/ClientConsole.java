@@ -101,22 +101,29 @@ public class ClientConsole implements ChatIF
   /**
    * This method is responsible for the creation of the Client UI.
    *
-   * @param args[0] The host to connect to.
+   * @param args [0] The host to connect to.
+   * @param args [1] The port to connect to.
    */
   public static void main(String[] args) 
   {
-    String host = "";
-    int port = 0;  //The port number
+      String host = ""; //the hostname
+      int port = 0;     //The port number
 
     try
     {
       host = args[0];
+
     }
     catch(ArrayIndexOutOfBoundsException e)
     {
       host = "localhost";
     }
-    ClientConsole chat= new ClientConsole(host, DEFAULT_PORT);
+      try {
+          port = Integer.parseInt(args[1]);
+      } catch (NumberFormatException ex) {
+          port = DEFAULT_PORT;
+      }
+      ClientConsole chat = new ClientConsole(host, port);
     chat.accept();  //Wait for console data
   }
 }

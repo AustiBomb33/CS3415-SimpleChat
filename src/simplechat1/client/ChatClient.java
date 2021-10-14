@@ -65,12 +65,12 @@ public class ChatClient extends AbstractClient {
     public void handleMessageFromClientUI(String msg) {
 
         //check if command qualifier '#' is used
-        if (msg.toString().substring(0, 1).equals("#")) {
-            String[] command = msg.toString().toLowerCase().replaceFirst("#", "").split(" ");
+        if (msg.substring(0, 1).equals("#")) {
+            String[] command = msg.toLowerCase().replaceFirst("#", "").split(" ");
 
             switch (command[0]) {
                 case "quit":
-                    clientUI.display("Quit command called. Terminating ocsf.client.");
+                    clientUI.display("Goodbye!");
                     quit();
                     break;
                 case "logoff":
@@ -115,21 +115,23 @@ public class ChatClient extends AbstractClient {
                     } else clientUI.display("You must be logged off to do that");
                     break;
                 case "gethost":
+                    clientUI.display("Host: " + getHost());
                     break;
                 case "getport":
+                    clientUI.display("Port: " + getPort());
                     break;
                 default:
+                    clientUI.display(String.format(
+                            "The command qualifier was used without a valid command.%n" +
+                                    "Here's a list of commands:%n" +
+                                    "#quit will disconnect and close the client.%n" +
+                                    "#logoff will disconnect from the server.%n" +
+                                    "#sethost sets the host. Not allowed when connected to a server.%n" +
+                                    "#setport sets the port. Not allowed when connected to a server.%n" +
+                                    "#login connects you to the server. Must not already be connected.%n" +
+                                    "#getport displays the current port.%n" +
+                                    "#gethost displays the current host name."));
             }
-//      (a) #quit cause the client to terminate gracefully. Make sure the connection to the server is terminated before exiting the program.
-//      (b) #logoff causes the client to disconnect from the server, but not quit.
-//      (c) #sethost <host> calls the setHost method in the client. Only allowed if the client is logged off; displays an error message otherwise.
-//      (d) #setport <prot> calls the setPort method in the client, with the
-//      same constraints as #sethost.
-//      (e) #login causes the client to connect to the server. Only allowed if the
-//      client is not already connected; display an error message otherwise.
-//      (f) #gethost displays the current host name.
-//      (g) #getport displays the current port number.
-
         } else {
 
             try {

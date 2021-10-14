@@ -120,7 +120,7 @@ public class ClientConsole implements ChatIF
     }
       try {
           port = Integer.parseInt(args[1]);
-      } catch (NumberFormatException ex) {
+      } catch (Exception ex) {
           port = DEFAULT_PORT;
       }
       ClientConsole chat = new ClientConsole(host, port);

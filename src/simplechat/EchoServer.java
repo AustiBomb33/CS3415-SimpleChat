@@ -1,9 +1,9 @@
-package simplechat1;// This file contains material supporting section 3.7 of the textbook:
+package simplechat;// This file contains material supporting section 3.7 of the textbook:
 // "Object Oriented Software Engineering" and is issued under the open-source
 // license found at www.lloseng.com 
 
 import ocsf.server.ConnectionToClient;
-import simplechat1.common.ChatIF;
+import simplechat.common.ChatIF;
 
 import java.io.IOException;
 

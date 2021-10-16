@@ -1,6 +1,6 @@
-package simplechat1;
+package simplechat;
 
-import simplechat1.common.ChatIF;
+import simplechat.common.ChatIF;
 
 import java.io.BufferedReader;
 import java.io.IOException;

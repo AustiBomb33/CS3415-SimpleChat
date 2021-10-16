@@ -5,6 +5,8 @@ package simplechat1;// This file contains material supporting section 3.7 of the
 import ocsf.server.ConnectionToClient;
 import simplechat1.common.ChatIF;
 
+import java.io.IOException;
+
 /**
  * This class overrides some of the methods in the abstract
  * superclass in order to give more functionality to the server.
@@ -67,9 +69,69 @@ public class EchoServer extends ocsf.server.AbstractServer {
     }
 
     //Instance methods ************************************************
-    public void handleMessageFromServer(String message) {
-        this.sendToAllClients("SERVER MSG> " + message);
-        serverUI.display("SERVER MSG> " + message);
+    public void handleMessageFromServerUI(String msg) {
+
+
+        if (msg.substring(0, 1).equals("#")) {
+            String[] command = msg.toLowerCase().replaceFirst("#", "").split(" ");
+
+            switch (command[0]) {
+                case "quit":
+                    try {
+                        close();
+                    } catch (IOException e) {
+                        serverUI.display("An error occurred while closing server.");
+                    }
+                    serverUI.display("Clients disconnected and server no longer listening.");
+                    serverUI.display("Terminating server.");
+                    System.exit(0);
+                    break;
+                case "stop":
+                    stopListening();
+                    break;
+                case "close":
+                    try {
+                        close();
+                    } catch (IOException e) {
+                        serverUI.display("An error occurred while closing server.");
+                    }
+                    serverUI.display("Clients disconnected and server no longer listening.");
+                    break;
+                case "setport":
+                    try {
+                        setPort(Integer.parseInt(command[1]));
+                        serverUI.display("Port set to " + getPort());
+                    } catch (NumberFormatException e) {
+                        serverUI.display("Port must be a number.");
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        serverUI.display("Enter the command followed by a port number");
+                    }
+                    break;
+                case "start":
+                    try {
+                        listen();
+                    } catch (Exception e) {
+                        serverUI.display("Couldn't listen for new clients.");
+                    }
+                    break;
+                case "getport":
+                    serverUI.display("Port: " + getPort());
+                    break;
+                default:
+                    serverUI.display(String.format(
+                            "The command qualifier was used without a valid command.%n" +
+                                    "here's a list of valid commands:%n" +
+                                    "#quit stops the server and terminates the client.%n" +
+                                    "#stop stops the server listening for new clients.%n" +
+                                    "#close closes server socket and disconnects all clients.%n" +
+                                    "#start starts the server listening for new clients.%n" +
+                                    "#setport <port> sets the port number.%n" +
+                                    "#getport displays the current port number.%n"));
+            }
+        } else {
+            this.sendToAllClients("SERVER MSG> " + msg);
+            serverUI.display("SERVER MSG> " + msg);
+        }
     }
 
     @Override

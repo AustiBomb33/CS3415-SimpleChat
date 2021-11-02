@@ -26,6 +26,7 @@ public class ChatClient extends AbstractClient {
      * the display method in the ocsf.client.
      */
     ChatIF clientUI;
+    String LoginID;
 
 
     //Constructors ****************************************************
@@ -38,11 +39,19 @@ public class ChatClient extends AbstractClient {
      * @param clientUI The interface type variable.
      */
 
-    public ChatClient(String host, int port, ChatIF clientUI)
+    public ChatClient(String id, String host, int port, ChatIF clientUI)
             throws IOException {
         super(host, port); //Call the superclass constructor
         this.clientUI = clientUI;
+        this.LoginID = id;
+
         openConnection();
+        try{
+            sendToServer("#LOGIN " + this.LoginID);
+        } catch (IOException e) {
+            clientUI.display("Could not send login command to server.  Terminating ocsf.client.");
+            quit();
+        }
     }
 
 

@@ -2,6 +2,7 @@ package simplechat;// This file contains material supporting section 3.7 of the 
 // "Object Oriented Software Engineering" and is issued under the open-source
 // license found at www.lloseng.com 
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import simplechat.client.ChatClient;
 import simplechat.common.ChatIF;
 
@@ -43,9 +44,9 @@ public class ClientConsole implements ChatIF {
      * @param host The host to connect to.
      * @param port The port to connect on.
      */
-    public ClientConsole(String host, int port) {
+    public ClientConsole(String id, String host, int port) {
         try {
-            client = new ChatClient(host, port, this);
+            client = new ChatClient(id, host, port, this);
         } catch (IOException exception) {
             System.out.println("Error: Can't setup connection!"
                     + " Terminating ocsf.client.");
@@ -63,21 +64,32 @@ public class ClientConsole implements ChatIF {
      * @param args [1] The port to connect to.
      */
     public static void main(String[] args) {
+        String id = ""; //the login ID
         String host = ""; //the hostname
         int port = 0;     //The port number
 
+            try{
+                id = args[0].trim();
+                if(id.equals("")){
+                    throw new InvalidArgumentException(new String[]{"Login ID is mandatory"});
+                }
+            } catch (Exception e){
+                System.out.println("Login ID is mandatory");
+                System.exit(0);
+            }
+
         try {
-            host = args[0];
+            host = args[1];
 
         } catch (ArrayIndexOutOfBoundsException e) {
             host = "localhost";
         }
         try {
-            port = Integer.parseInt(args[1]);
+            port = Integer.parseInt(args[2]);
         } catch (Exception ex) {
             port = DEFAULT_PORT;
         }
-        ClientConsole chat = new ClientConsole(host, port);
+        ClientConsole chat = new ClientConsole(id, host, port);
         chat.accept();  //Wait for console data
     }
 

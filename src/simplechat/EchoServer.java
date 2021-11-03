@@ -6,6 +6,7 @@ import ocsf.server.ConnectionToClient;
 import simplechat.common.ChatIF;
 
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * This class overrides some of the methods in the abstract

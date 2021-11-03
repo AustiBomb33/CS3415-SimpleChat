@@ -64,7 +64,7 @@ public class EchoServer extends ocsf.server.AbstractServer {
         try {
             sv.listen(); //Start listening for connections
         } catch (Exception ex) {
-            System.out.println("ERROR - Could not listen for clients!");
+            serverUI.display("ERROR - Could not listen for clients!");
         }
     }
 
@@ -72,7 +72,7 @@ public class EchoServer extends ocsf.server.AbstractServer {
     public void handleMessageFromServerUI(String msg) {
 
 
-        if (msg.substring(0, 1).equals("#")) {
+        if (msg.charAt(0) == '#') {
             String[] command = msg.toLowerCase().replaceFirst("#", "").split(" ");
 
             switch (command[0]) {
@@ -137,13 +137,13 @@ public class EchoServer extends ocsf.server.AbstractServer {
     @Override
     public void clientConnected(ConnectionToClient client) {
         serverUI.display("Client connected from " + client);
-        this.sendToAllClients("Welcome to the server! What's your name?");
+        client.setInfo("hasSentMessage", false);
+        client.setInfo("loginID", "");
     }
 
     @Override
     protected synchronized void clientDisconnected(ConnectionToClient client) {
-        serverUI.display("Client disconnected from " + client);
-        this.sendToAllClients("Somebody left. Goodbye!");
+        serverUI.display(String.format("client %s disconnected from IP: %s", client.getInfo("loginID"), client));
     }
 
     /**
@@ -155,7 +155,41 @@ public class EchoServer extends ocsf.server.AbstractServer {
     public void handleMessageFromClient
     (Object msg, ConnectionToClient client) {
         serverUI.display("Message received: " + msg + " from " + client);
-        this.sendToAllClients(msg);
+
+        //check for login command
+        if (msg.toString().split(" ")[0].equalsIgnoreCase("#LOGIN")) {
+            if (client.getInfo("loginID").equals("") && client.getInfo("hasSentMessage").equals(false)) {
+                client.setInfo("loginID", msg.toString().split(" ")[1]);
+
+            } else if (!client.getInfo("loginID").equals("")) {
+                try {
+                    client.sendToClient("Login ID already set");
+                } catch (IOException e) {
+                    serverUI.display("Couldn't send message to client");
+                }
+            } else if (client.getInfo("hasSentMessage").equals(true)){
+                try {
+                    client.sendToClient("#LOGIN command must be the first message you send");
+                    client.close();
+                } catch (IOException e) {
+                    serverUI.display("Couldn't send message to client");
+                }
+            }
+
+        } else {
+            if(client.getInfo("loginID").equals("")){
+                try {
+                    serverUI.display(client + "sent a message without loggin in. Kicking from server");
+                    client.sendToClient("Log in before sending messages");
+                    client.close();
+                } catch (IOException e){
+                    serverUI.display(e.getMessage());
+                }
+            }
+            this.sendToAllClients(String.format("%s> %s", client.getInfo("loginID"), msg));
+        }
+
+        client.setInfo("hasSentMessage", true);
     }
 
     /**
@@ -163,7 +197,7 @@ public class EchoServer extends ocsf.server.AbstractServer {
      * when the server starts listening for connections.
      */
     protected void serverStarted() {
-        System.out.println
+        serverUI.display
                 ("Server listening for connections on port " + getPort());
     }
 
@@ -174,7 +208,7 @@ public class EchoServer extends ocsf.server.AbstractServer {
      * when the server stops listening for connections.
      */
     protected void serverStopped() {
-        System.out.println
+        serverUI.display
                 ("Server has stopped listening for connections.");
     }
 }

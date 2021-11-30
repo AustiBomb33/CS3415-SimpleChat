@@ -47,9 +47,9 @@ public class ClientConsole implements ChatIF {
     public ClientConsole(String id, String host, int port) {
         try {
             client = new ChatClient(id, host, port, this);
+            client.addObserver(new SimpleChatObserver());
         } catch (IOException exception) {
-            System.out.println("Error: Can't setup connection!"
-                    + " Terminating ocsf.client.");
+            System.out.println("Error: Can't setup connection! Terminating ocsf.client.");
             System.exit(1);
         }
     }

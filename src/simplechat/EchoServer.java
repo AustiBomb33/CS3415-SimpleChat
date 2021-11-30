@@ -3,6 +3,7 @@ package simplechat;// This file contains material supporting section 3.7 of the 
 // license found at www.lloseng.com 
 
 import ocsf.server.ConnectionToClient;
+import ocsf.server.ObservableServer;
 import simplechat.common.ChatIF;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ import java.util.Locale;
  * @author Paul Holden
  * @version July 2000
  */
-public class EchoServer extends ocsf.server.AbstractServer {
+public class EchoServer extends ObservableServer {
     //Class variables *************************************************
 
     /**
@@ -137,6 +138,7 @@ public class EchoServer extends ocsf.server.AbstractServer {
 
     @Override
     public void clientConnected(ConnectionToClient client) {
+        super.clientConnected(client);
         serverUI.display("Client connected from " + client);
         client.setInfo("hasSentMessage", false);
         client.setInfo("loginID", "");
@@ -144,6 +146,7 @@ public class EchoServer extends ocsf.server.AbstractServer {
 
     @Override
     protected synchronized void clientDisconnected(ConnectionToClient client) {
+        super.clientDisconnected(client);
         serverUI.display(String.format("client %s disconnected from IP: %s", client.getInfo("loginID"), client));
     }
 
@@ -198,6 +201,7 @@ public class EchoServer extends ocsf.server.AbstractServer {
      * when the server starts listening for connections.
      */
     protected void serverStarted() {
+        super.serverStarted();
         serverUI.display
                 ("Server listening for connections on port " + getPort());
     }
@@ -209,6 +213,7 @@ public class EchoServer extends ocsf.server.AbstractServer {
      * when the server stops listening for connections.
      */
     protected void serverStopped() {
+        super.serverStopped();
         serverUI.display
                 ("Server has stopped listening for connections.");
     }

@@ -5,9 +5,11 @@
 package simplechat.client;
 
 import ocsf.client.AbstractClient;
+import ocsf.client.ObservableClient;
 import simplechat.common.ChatIF;
 
 import java.io.IOException;
+import java.util.Observable;
 
 /**
  * This class overrides some of the methods defined in the abstract
@@ -18,7 +20,7 @@ import java.io.IOException;
  * @author Fran&ccedil;ois B&eacute;langer
  * @version July 2000
  */
-public class ChatClient extends AbstractClient {
+public class ChatClient extends ObservableClient {
     //Instance variables **********************************************
 
     /**
@@ -159,6 +161,7 @@ public class ChatClient extends AbstractClient {
 //  }
 
     public void connectionException(Exception exception) {
+        super.connectionException(exception);
         clientUI.display("Connection error occurred. Terminating ocsf.client.");
         quit();
     }

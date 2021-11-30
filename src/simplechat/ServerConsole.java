@@ -5,6 +5,7 @@ import simplechat.common.ChatIF;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Observable;
 
 public class ServerConsole implements ChatIF {
     EchoServer server;
@@ -13,8 +14,10 @@ public class ServerConsole implements ChatIF {
     public ServerConsole(int port) {
         try {
             server = new EchoServer(port, this);
+            server.addObserver(new SimpleChatObserver());
         } catch (Exception e) {
             display("An error has occurred and EchoServer could not be started. Terminating");
+            e.printStackTrace();
             System.exit(1);
         }
     }
@@ -39,6 +42,10 @@ public class ServerConsole implements ChatIF {
             System.out.println
                     ("Unexpected error while reading from console!");
         }
+    }
+
+    public void update(Observable observable, Object message){
+        display("did a thing");
     }
 
     //instance methods
